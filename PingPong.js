@@ -6,6 +6,8 @@ class Board {
     this.game_over = false;
     this.bars = [];
     this.ball = null;
+    this.jugador1 = 0;
+    this.jugador2 = 0;
     }
         getElements(){
             var elements = this.bars.map(bar => bar);
@@ -50,6 +52,21 @@ class Ball{
         else this.direction = 1;
     
     }
+    // Reacciona a la colision de la pelota con los bordes superiores o inferiores
+    costados(){
+        if(this.y <= 0 || this.y >= this.board.height){
+            this.speed_y = -this.speed_y;
+        }
+    }
+    esGol(){
+        if(this.x < 0 ){
+            return 2;
+        }
+        if(this.x > this.board.width){
+            return 1;
+        }
+        return 0;
+    }
 }
 class Boardview{
     constructor(canvas,board){
@@ -58,6 +75,7 @@ class Boardview{
         this.canvas.height = board.height;
         this.board = board;
         this.ctx = canvas.getContext("2d");
+        this.ctx.fillStyle = "black"
     }
     draw(){
         this.board.getElements().forEach(element => {
@@ -80,8 +98,53 @@ class Boardview{
             if(hit(bar, this.board.ball)){
                 this.board.ball.collisions(bar);
             }
-        })
+        });
+        this.board.ball.costados();
+        var esGol = this.board.ball.esGol();
+        if(esGol == 1){
+            this.board.ball = new Ball(400,200,10,board);
+            this.board.playing = false;
+            this.board.jugador1++;
+            if(this.board.jugador1 == 5){
+                mostrarMsjVic(1);
+                this.board.jugador1 = 0;
+                this.board.jugador2 = 0;
+            }
+            else {
+                mostrarMsj(1);
+            }
+        }
+        if(esGol == 2){
+            this.board.ball = new Ball(400,200,10,board);
+            this.board.playing = false;
+            this.board.jugador2++;
+            if(this.board.jugador2 == 5){
+                mostrarMsjVic(2);
+                this.board.jugador1 = 0;
+                this.board.jugador2 = 0;
+            }
+            else {
+                mostrarMsj(2);
+            }
+        }
     }
+}
+function mostrarMsjVic(jugador){
+    swal({
+        title: "Felicidades!",
+        text: "Victoria del jugador "+jugador,
+        icon: "info",
+        timer: 3000,
+     });
+}
+function mostrarMsj(jugador){
+    swal({
+        title: "Felicidades!",
+        text: "Gol de jugador "+jugador,
+        icon: "info",
+        timer: 3000,
+        buttons: false,
+     });
 }
 function hit(a,b){
     // Revisa si a colisiona con b
@@ -136,10 +199,14 @@ class Bar {
         return "x: " + this.x + "y: " + this.y; 
     }
     down(){
-        this.y += this.speed;
+        if(this.y + this.height <= this.board.height){
+            this.y += this.speed;
+        }
     }
     up(){
-        this.y -= this.speed;
+        if(this.y > 0){
+            this.y -= this.speed; 
+        } 
     }
 }
 window.addEventListener("load", controller);

@@ -1,0 +1,18 @@
+canvas {
+    margin-left: 15%;
+    margin-top: 10px;
+    border: solid 5px RGBA(220,53,69,var(--bs-bg-opacity,1))!important;
+}
+h1{
+    text-align: center;
+}
+h2{
+    text-align: center;
+}
+.fondo{
+    background-color: #FAF0D7;
+}
+.swal-modal {
+    background-color: white;
+    border: 3px solid RGBA(220,53,69,var(--bs-bg-opacity,1))!important;
+  }
