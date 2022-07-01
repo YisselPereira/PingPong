@@ -20,9 +20,14 @@ class Ball{
         this.radius = radius;
         this.board = board;
         this.speed_y = 0;
-        this.speed_x = 0;
+        this.speed_x = 1;
         this.board.ball = this;
         this.kind = "circle";
+        this.direction = 1;
+    }
+    move(){
+        this.x += this.speed_x * this.direction;
+        this.y += this.speed_y;
     }
 }
 class Boardview{
@@ -42,8 +47,11 @@ class Boardview{
         this.ctx.clearRect(0,0,this.board.width,this.board.height);
     }
     play (){
+        if(this.board.playing){
         this.clean();
         this.draw();
+        this.board.ball.move();
+        }
     }
 }
 function draw(ctx,element){
@@ -91,21 +99,29 @@ var bar2 = new Bar(760,100,30,150,board);
 var ball = new Ball(400, 200, 10, board);
 
 document.addEventListener("keydown", function(ev){
-    ev.preventDefault();
     console.log(ev.keyCode);
-    if(ev.keyCode== 38){  
+    if(ev.keyCode== 38){ 
+        ev.preventDefault(); 
         bar2.up();
     }
     else if(ev.keyCode == 40){
+        ev.preventDefault();
         bar2.down();
     }
     else if(ev.keyCode == 87){
+        ev.preventDefault();
         bar.up();
     }
     else if(ev.keyCode == 83){
+        ev.preventDefault();
         bar.down();
     }
+    else if(ev.keyCode == 32){
+        ev.preventDefault();
+        board.playing = !board.playing;
+    }
 })
+board_view.draw();
 window.requestAnimationFrame(controller);
 function controller(){
     board_view.play();
