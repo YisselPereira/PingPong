@@ -45,16 +45,19 @@ class Bar {
         this.board = board;
         this.board.bars.push(this);
         this.kind = "rectangle";
-
+        this.speed = 10;
+    }
+    toString(){
+        return "x: " + this.x + "y: " + this.y; 
     }
     down(){
-
+        this.y += this.speed;
     }
     up(){
-
+        this.y -= this.speed;
     }
 }
-window.addEventListener("load", main)
+window.addEventListener("load", main);
 function main(){
     var board = new Board(800,400);
     console.log(board);
@@ -63,4 +66,13 @@ function main(){
     var bar = new Bar(10,100,40,100,board);
     var bar2 = new Bar(750,100,40,100,board);
     board_view.draw();
+    document.addEventListener("keydown", function(ev){
+        console.log(ev.keyCode);
+        if(ev.keyCode== 38){  
+            bar2.up();
+        }
+        if(ev.keyCode == 40){
+            bar2.down();
+        }
+    })
 }
